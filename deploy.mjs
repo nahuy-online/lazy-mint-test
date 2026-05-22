@@ -5,7 +5,8 @@ import {
     beginCell,
     toNano,
     Address,
-    Cell
+    Cell,
+    contractAddress
 } from '@ton/ton';
 import { mnemonicToPrivateKey } from '@ton/crypto';
 import dotenv from 'dotenv';
@@ -49,17 +50,17 @@ async function main() {
             : 'https://testnet.toncenter.io/api/v2/jsonRPC';
     }
     
-    // Fallback endpoints if primary fails - добавлен официальный тестнет
+    // Fallback endpoints if primary fails - added official testnet and tonapi
     const fallbackEndpoints = [
         NETWORK === 'mainnet' 
             ? 'https://tonapi.io/api/v2/jsonRPC' 
-            : 'https://testnet.ton.org', // Официальный эндпоинт TON
+            : 'https://testnet.toncenter.io/api/v2/jsonRPC',
         NETWORK === 'mainnet'
             ? 'https://dton.io/api/v2/jsonRPC'
             : 'https://testnet.dton.io/api/v2/jsonRPC',
         NETWORK === 'mainnet'
             ? 'https://toncenter.io/api/v2/jsonRPC'
-            : 'https://testnet.toncenter.io/api/v2/jsonRPC'
+            : 'https://testnet.ton.org'
     ];
     
     let client;
