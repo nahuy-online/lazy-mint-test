@@ -49,14 +49,17 @@ async function main() {
             : 'https://testnet.toncenter.io/api/v2/jsonRPC';
     }
     
-    // Fallback endpoints if primary fails
+    // Fallback endpoints if primary fails - добавлен официальный тестнет
     const fallbackEndpoints = [
         NETWORK === 'mainnet' 
             ? 'https://tonapi.io/api/v2/jsonRPC' 
-            : 'https://testnet.tonapi.io/api/v2/jsonRPC',
+            : 'https://testnet.ton.org', // Официальный эндпоинт TON
         NETWORK === 'mainnet'
             ? 'https://dton.io/api/v2/jsonRPC'
-            : 'https://testnet.dton.io/api/v2/jsonRPC'
+            : 'https://testnet.dton.io/api/v2/jsonRPC',
+        NETWORK === 'mainnet'
+            ? 'https://toncenter.io/api/v2/jsonRPC'
+            : 'https://testnet.toncenter.io/api/v2/jsonRPC'
     ];
     
     let client;
