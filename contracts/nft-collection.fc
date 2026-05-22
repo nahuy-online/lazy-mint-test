@@ -1,0 +1,34 @@
+#include "stdlib.fc"
+#include "params.fc"
+#include "op-codes.fc"
+
+;; NFT Collection contract
+;; Implements TON NFT standard for collection management
+
+global int nft_item_code_hash;
+
+() recv_internal(int msg_value, cell in_msg, slice in_body) impure {
+    int op = in_body.preload_uint(32);
+    
+    if (op == op::mint()) {
+        ;; Handle mint request
+        ;; Expects: item_index, owner_address, content
+        return ();
+    }
+    
+    if (op == op::change_content()) {
+        ;; Handle content change
+        return ();
+    }
+    
+    if (op == op::royalty_parameters()) {
+        ;; Return royalty parameters
+        return ();
+    }
+    
+    ;; Unknown op - ignore
+}
+
+() recv_external(slice in_msg) impure {
+    ;; External messages handling
+}
