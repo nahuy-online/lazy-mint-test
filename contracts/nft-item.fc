@@ -6,8 +6,7 @@
 ;; Minimal implementation for TON NFT standard
 
 () recv_internal(int msg_value, cell in_msg, slice in_body) impure {
-    slice cs = in_body.begin_parse();
-    int op = cs.preload_uint(32);
+    int op = in_body.preload_uint(32);
     
     if (op == op::transfer()) {
         ;; Handle transfer
