@@ -40,17 +40,53 @@ async function main() {
     const collectionCode = Cell.fromBoc(fs.readFileSync(path.join(buildDir, 'nft-collection.cell')))[0];
 
     // Setup client
-    const endpoint = NETWORK === 'mainnet' 
-        ? 'https://toncenter.io/api/v2/jsonRPC' 
-        : 'https://testnet.toncenter.io/api/v2/jsonRPC';
+    // Try multiple endpoints for reliability
+    let endpoint = process.env.TON_API_ENDPOINT;
     
-    const client = new TonClient({
-        endpoint,
-        apiKey: TONCENTER_API_KEY
-    });
+    if (!endpoint) {
+        endpoint = NETWORK === 'mainnet' 
+            ? 'https://toncenter.io/api/v2/jsonRPC' 
+            : 'https://testnet.toncenter.io/api/v2/jsonRPC';
+    }
+    
+    // Fallback endpoints if primary fails
+    const fallbackEndpoints = [
+        NETWORK === 'mainnet' 
+            ? 'https://tonapi.io/api/v2/jsonRPC' 
+            : 'https://testnet.tonapi.io/api/v2/jsonRPC',
+        NETWORK === 'mainnet'
+            ? 'https://dton.io/api/v2/jsonRPC'
+            : 'https://testnet.dton.io/api/v2/jsonRPC'
+    ];
+    
+    let client;
+    let currentEndpoint = endpoint;
+    
+    // Try to create client with available endpoint
+    for (const ep of [endpoint, ...fallbackEndpoints]) {
+        try {
+            console.log(`?? Trying endpoint: ${ep}`);
+            client = new TonClient({
+                endpoint: ep,
+                apiKey: TONCENTER_API_KEY
+            });
+            // Test connection
+            await client.getMasterchainInfo();
+            currentEndpoint = ep;
+            break;
+        } catch (e) {
+            console.log(`   Failed: ${e.message}`);
+            continue;
+        }
+    }
+    
+    if (!client) {
+        console.error('? All endpoints failed. Check your internet connection.');
+        process.exit(1);
+    }
 
     console.log(`?? Network: ${NETWORK}`);
-    console.log(`?? Endpoint: ${endpoint}\n`);
+    console.log(`?? Connected to: ${currentEndpoint}\n`);
 
     // Setup wallet
     const keyPair = await mnemonicToPrivateKey(MNEMONIC.split(' '));
