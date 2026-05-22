@@ -1,0 +1,11 @@
+;; NFT Collection op-codes
+int op::mint() asm "0x642b7d07 PUSHINT";
+int op::change_content() asm "0xb38c5b01 PUSHINT";
+int op::royalty_parameters() asm "0x6989f800 PUSHINT";
+int op::excesses() asm "0xd53276db PUSHINT";
+
+;; NFT Item op-codes
+int op::transfer() asm "0x5fcc3d14 PUSHINT";
+int op::get_static_data() asm "0x2fcb26a6 PUSHINT";
+int op::owner_changed() asm "0x05138d91 PUSHINT";
+int op::report_static_data() asm "0x8b771735 PUSHINT";

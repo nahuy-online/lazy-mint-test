@@ -1,0 +1,27 @@
+#include "stdlib.fc"
+#include "params.fc"
+#include "op-codes.fc"
+
+;; Lazy-mint NFT Item contract
+;; Minimal implementation for TON NFT standard
+
+() recv_internal(int msg_value, cell in_msg, slice in_body) impure {
+    slice cs = in_body.begin_parse();
+    int op = cs.preload_uint(32);
+    
+    if (op == op::transfer()) {
+        ;; Handle transfer
+        return ();
+    }
+    
+    if (op == op::get_static_data()) {
+        ;; Return static data
+        return ();
+    }
+    
+    ;; Unknown op - ignore
+}
+
+() recv_external(slice in_msg) impure {
+    ;; External messages handling
+}
