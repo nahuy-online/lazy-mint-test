@@ -62,7 +62,29 @@ async function main() {
     console.log(`✅ nft-item.cell created (${nftItemCell.length} bytes)`);
     console.log(`   Hash: ${crypto.createHash('sha256').update(nftItemCell).digest('hex')}`);
 
-    console.log('\n⚠️ Skipping nft-collection.fc (file not found)');
+    // Compile NFT Collection
+    console.log('\n🔨 Compiling nft-collection.fc...');
+    const nftCollectionSource = resolveIncludes('nft-collection.fc', contractsDir);
+    const nftCollectionResult = await compileFunc({
+        targets: ['nft-collection.fc'],
+        sources: (srcPath) => {
+            if (srcPath === 'nft-collection.fc') {
+                return nftCollectionSource;
+            }
+            return fs.readFileSync(path.join(contractsDir, srcPath), 'utf8');
+        }
+    });
+
+    if (nftCollectionResult.status === 'error') {
+        console.error('❌ Failed:', nftCollectionResult.message);
+        process.exit(1);
+    }
+
+    const nftCollectionCell = Buffer.from(nftCollectionResult.codeBoc, 'base64');
+    fs.writeFileSync(path.join(buildDir, 'nft-collection.cell'), nftCollectionCell);
+    console.log(`✅ nft-collection.cell created (${nftCollectionCell.length} bytes)`);
+    console.log(`   Hash: ${crypto.createHash('sha256').update(nftCollectionCell).digest('hex')}`);
+
     console.log('\n✅ Compilation complete!\n');
 }
 
